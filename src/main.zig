@@ -154,7 +154,7 @@ fn argSlice(arg: [:0]u8) []const u8 {
 
 fn parseArgs(args: []const [:0]u8) ForwardConfig {
     var idx: usize = 1;
-    var remote_service_host: []const u8 = "127.0.0.1";
+    var remote_service_host_override: ?[]const u8 = null;
 
     while (idx < args.len and std.mem.startsWith(u8, argSlice(args[idx]), "--")) {
         const option = argSlice(args[idx]);
@@ -164,7 +164,7 @@ fn parseArgs(args: []const [:0]u8) ForwardConfig {
                 std.log.err("--service-host requires a value", .{});
                 usage();
             }
-            remote_service_host = argSlice(args[idx]);
+            remote_service_host_override = argSlice(args[idx]);
             idx += 1;
             continue;
         }
@@ -194,12 +194,23 @@ fn parseArgs(args: []const [:0]u8) ForwardConfig {
         };
     }
 
+    const remote_service_host = remote_service_host_override orelse inferServiceHost(ssh_target);
+
     return .{
         .ssh_target = ssh_target,
         .remote_service_host = remote_service_host,
         .remote_port = remote_port,
         .local_port = local_port,
     };
+}
+
+fn inferServiceHost(ssh_target: []const u8) []const u8 {
+    if (std.mem.lastIndexOfScalar(u8, ssh_target, '@')) |at| {
+        if (at + 1 < ssh_target.len) {
+            return ssh_target[at + 1 ..];
+        }
+    }
+    return ssh_target;
 }
 
 fn spawnSsh(ssh_target: []const u8, service_host: []const u8, remote_port: u16) !std.process.Child {

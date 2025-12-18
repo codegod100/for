@@ -23,7 +23,7 @@ From the repository root, execute:
 ./scripts/run.sh -- user@ssh-bastion.example.com 443 8443
 ```
 
-Arguments after `--` mirror the binary usage: first the SSH target, then the remote service port, and optionally a local port (defaults to the same number). In the example above, traffic from `localhost:8443` is tunneled over SSH to `user@ssh-bastion.example.com`, which forwards it to the remote host's port `443`. You can also prepend `--service-host my.internal.service` before the positional arguments to forward to a different host behind the SSH jump box.
+Arguments after `--` mirror the binary usage: first the SSH target, then the remote service port, and optionally a local port (defaults to the same number). In the example above, traffic from `localhost:8443` is tunneled over SSH to `user@ssh-bastion.example.com`, which forwards it to the remote host's port `443`. By default the remote host equals the hostname portion of the SSH destination (e.g., `ssh-bastion.example.com`); prepend `--service-host my.internal.service` before the positional arguments to forward to a different host behind the SSH jump box.
 
 If you prefer a manual invocation you can still rely on Zig directly:
 
