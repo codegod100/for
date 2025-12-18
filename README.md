@@ -31,3 +31,13 @@ zig build run -- <program args>
 ```
 
 The compiled binary can also be executed from `zig-out/bin/remote-forward` once `zig build` (or the helper script) has completed.
+
+## Run via `curl | bash`
+
+To compile and run without cloning ahead of time, use the hosted script:
+
+```bash
+curl -sSf https://raw.githubusercontent.com/codegod100/for/main/scripts/remote-forward.sh | bash -s -- <program args>
+```
+
+The script clones the repository into a temporary directory, invokes `zig build run`, and forwards any arguments you pass after `--` to the executable. It requires both `git` and `zig` to already be available on your machine. You can pin to a different revision by setting `REMOTE_FORWARD_REF=<tag-or-branch>` before piping the script.
