@@ -18,8 +18,8 @@ jobs:
         with:
           version: 0.15.2
 
-      - name: Build
-        run: zig build
+      - name: Build (portable x86_64-linux)
+        run: zig build -Dtarget=x86_64-linux-gnu -Dcpu=baseline
 
       - name: Upload binary
         uses: actions/upload-artifact@v4

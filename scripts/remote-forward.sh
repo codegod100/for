@@ -26,6 +26,15 @@ command -v unzip >/dev/null 2>&1 || {
   exit 1
 }
 
+OS="$(uname -s)"
+ARCH="$(uname -m)"
+
+if [[ "${OS}" != "Linux" || "${ARCH}" != "x86_64" ]]; then
+  log "prebuilt artifact currently supports Linux x86_64 only (detected ${OS}/${ARCH})"
+  log "clone the repo and run ./scripts/run.sh to build locally on other platforms"
+  exit 1
+fi
+
 ZIP_PATH="${WORKDIR}/remote-forward.zip"
 log "downloading artifact: ${ARTIFACT_URL}"
 curl -fsSL "${ARTIFACT_URL}" -o "${ZIP_PATH}"

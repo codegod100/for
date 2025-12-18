@@ -13,6 +13,8 @@ curl -sSf https://raw.githubusercontent.com/codegod100/for/main/scripts/remote-f
 
 The script downloads the latest CI-built binary artifact (via [nightly.link](https://nightly.link/)), extracts it, and executes it with the arguments you pass after `--`. Only `curl` and `unzip` are required on your machine. Set `REMOTE_FORWARD_BIN_URL=<custom zip url>` if you want to pin a specific artifact or mirror. SSH still transports all forwarded traffic.
 
+> **Note:** The hosted artifact targets Linux on x86_64 using baseline CPU features, so it should run on most modern Linux servers. For other operating systems or architectures, clone the repo and build locally as described below.
+
 ## Running from a local checkout
 
 From the repository root, execute:
