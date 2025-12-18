@@ -2,19 +2,18 @@
 
 Utility binary built with Zig. The executable is assembled through the `build.zig` script which produces the `remote-forward` binary under `zig-out/bin`.
 
-## Requirements
+## Quick start (`curl | bash`)
 
-- [Zig](https://ziglang.org/) 0.11.0 or newer available on your `PATH`.
-
-## Building
+To compile and run without cloning ahead of time, pipe the hosted script directly to Bash:
 
 ```bash
-./scripts/build.sh
+curl -sSf https://raw.githubusercontent.com/codegod100/for/main/scripts/remote-forward.sh | \
+  bash -s -- user@ssh-bastion.example.com 443 8443
 ```
 
-The script wraps `zig build` so you can pass any additional Zig build options, for example `./scripts/build.sh -Drelease-safe=true`.
+Just like the local helper script, the first argument is the SSH destination and the remaining values describe the remote and local ports that the tunnel should expose. The installer script clones this repository into a temporary directory, invokes `zig build run`, and forwards any extra flags (such as `--service-host api.internal`) directly to the executable. SSH is always used to carry the traffic to the remote port.
 
-## Running
+## Running from a local checkout
 
 From the repository root, execute:
 
@@ -32,13 +31,14 @@ zig build run -- <program args>
 
 The compiled binary can also be executed from `zig-out/bin/remote-forward` once `zig build` (or the helper script) has completed.
 
-## Run via `curl | bash`
+## Requirements
 
-To compile and run without cloning ahead of time, use the hosted script:
+- [Zig](https://ziglang.org/) 0.11.0 or newer available on your `PATH`.
+
+## Building
 
 ```bash
-curl -sSf https://raw.githubusercontent.com/codegod100/for/main/scripts/remote-forward.sh | \
-  bash -s -- user@ssh-bastion.example.com 443 8443
+./scripts/build.sh
 ```
 
-Just like the local helper script, the first argument is the SSH destination and the remaining values describe the remote and local ports that the tunnel should expose. The installer script clones this repository into a temporary directory, invokes `zig build run`, and forwards any extra flags (such as `--service-host api.internal`) directly to the executable. SSH is always used to carry the traffic to the remote port.
+The script wraps `zig build` so you can pass any additional Zig build options, for example `./scripts/build.sh -Drelease-safe=true`.
