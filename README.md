@@ -33,7 +33,7 @@ The compiled binary can also be executed from `zig-out/bin/remote-forward` once 
 
 ## Requirements
 
-- [Zig](https://ziglang.org/) 0.11.0 or newer available on your `PATH`.
+- [Zig](https://ziglang.org/) 0.15.2 or newer available on your `PATH`.
 
 ## Building
 
