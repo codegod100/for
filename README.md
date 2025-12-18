@@ -19,10 +19,10 @@ The script wraps `zig build` so you can pass any additional Zig build options, f
 From the repository root, execute:
 
 ```bash
-./scripts/run.sh -- <program args>
+./scripts/run.sh -- user@ssh-bastion.example.com 443 8443
 ```
 
-Any arguments passed after `--` are forwarded directly to `zig build run`, letting you pass program flags just as you would when invoking the executable manually.
+Arguments after `--` mirror the binary usage: first the SSH target, then the remote service port, and optionally a local port (defaults to the same number). In the example above, traffic from `localhost:8443` is tunneled over SSH to `user@ssh-bastion.example.com`, which forwards it to the remote host's port `443`. You can also prepend `--service-host my.internal.service` before the positional arguments to forward to a different host behind the SSH jump box.
 
 If you prefer a manual invocation you can still rely on Zig directly:
 
@@ -37,7 +37,8 @@ The compiled binary can also be executed from `zig-out/bin/remote-forward` once 
 To compile and run without cloning ahead of time, use the hosted script:
 
 ```bash
-curl -sSf https://raw.githubusercontent.com/codegod100/for/main/scripts/remote-forward.sh | bash -s -- <program args>
+curl -sSf https://raw.githubusercontent.com/codegod100/for/main/scripts/remote-forward.sh | \
+  bash -s -- user@ssh-bastion.example.com 443 8443
 ```
 
-The script clones the repository into a temporary directory, invokes `zig build run`, and forwards any arguments you pass after `--` to the executable. It requires both `git` and `zig` to already be available on your machine. You can pin to a different revision by setting `REMOTE_FORWARD_REF=<tag-or-branch>` before piping the script.
+Just like the local helper script, the first argument is the SSH destination and the remaining values describe the remote and local ports that the tunnel should expose. The installer script clones this repository into a temporary directory, invokes `zig build run`, and forwards any extra flags (such as `--service-host api.internal`) directly to the executable. SSH is always used to carry the traffic to the remote port.
