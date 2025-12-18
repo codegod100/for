@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${REMOTE_FORWARD_REPO:-https://github.com/codegod100/for.git}"
-REF="${REMOTE_FORWARD_REF:-main}"
+ARTIFACT_URL="${REMOTE_FORWARD_BIN_URL:-https://nightly.link/codegod100/for/workflows/ci.yml/main/remote-forward.zip}"
 
 cleanup() {
   if [[ -n "${WORKDIR:-}" && -d "${WORKDIR}" ]]; then
@@ -13,18 +12,25 @@ cleanup() {
 WORKDIR="$(mktemp -d)"
 trap cleanup EXIT
 
-command -v git >/dev/null 2>&1 || {
-  echo "git must be installed to clone ${REPO_URL}" >&2
+command -v curl >/dev/null 2>&1 || {
+  echo "curl must be installed to download ${ARTIFACT_URL}" >&2
   exit 1
 }
 
-command -v zig >/dev/null 2>&1 || {
-  echo "zig must be installed and on PATH" >&2
+command -v unzip >/dev/null 2>&1 || {
+  echo "unzip must be available to extract the prebuilt binary archive" >&2
   exit 1
 }
 
-git clone --depth 1 --branch "${REF}" "${REPO_URL}" "${WORKDIR}" >/dev/null
-cd "${WORKDIR}"
+ZIP_PATH="${WORKDIR}/remote-forward.zip"
+curl -fsSL "${ARTIFACT_URL}" -o "${ZIP_PATH}"
+unzip -q "${ZIP_PATH}" -d "${WORKDIR}"
 
-# Ensure dependencies are downloaded and binary is built locally before running
-zig build run -- "$@"
+BIN_PATH="$(find "${WORKDIR}" -type f -name 'remote-forward' -print -quit)"
+if [[ -z "${BIN_PATH}" ]]; then
+  echo "Failed to locate remote-forward binary in downloaded artifact" >&2
+  exit 1
+fi
+
+chmod +x "${BIN_PATH}"
+exec "${BIN_PATH}" "$@"

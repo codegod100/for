@@ -20,3 +20,10 @@ jobs:
 
       - name: Build
         run: zig build
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: remote-forward
+          path: zig-out/bin/remote-forward
+          retention-days: 7

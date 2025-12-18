@@ -4,14 +4,14 @@ Utility binary built with Zig. The executable is assembled through the `build.zi
 
 ## Quick start (`curl | bash`)
 
-To compile and run without cloning ahead of time, pipe the hosted script directly to Bash:
+To run the prebuilt binary without cloning or compiling, pipe the hosted script directly to Bash:
 
 ```bash
 curl -sSf https://raw.githubusercontent.com/codegod100/for/main/scripts/remote-forward.sh | \
   bash -s -- user@ssh-bastion.example.com 443 8443
 ```
 
-Just like the local helper script, the first argument is the SSH destination and the remaining values describe the remote and local ports that the tunnel should expose. The installer script clones this repository into a temporary directory, invokes `zig build run`, and forwards any extra flags (such as `--service-host api.internal`) directly to the executable. SSH is always used to carry the traffic to the remote port.
+The script downloads the latest CI-built binary artifact (via [nightly.link](https://nightly.link/)), extracts it, and executes it with the arguments you pass after `--`. Only `curl` and `unzip` are required on your machine. Set `REMOTE_FORWARD_BIN_URL=<custom zip url>` if you want to pin a specific artifact or mirror. SSH still transports all forwarded traffic.
 
 ## Running from a local checkout
 
@@ -31,9 +31,9 @@ zig build run -- <program args>
 
 The compiled binary can also be executed from `zig-out/bin/remote-forward` once `zig build` (or the helper script) has completed.
 
-## Requirements
+## Requirements (local builds)
 
-- [Zig](https://ziglang.org/) 0.15.2 or newer available on your `PATH`.
+- [Zig](https://ziglang.org/) 0.15.2 or newer available on your `PATH` if you plan to build locally.
 
 ## Building
 
